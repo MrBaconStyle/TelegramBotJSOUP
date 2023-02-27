@@ -151,8 +151,6 @@ public class TelBot extends TelegramLongPollingBot {
                 }
             }
 
-
-//            if (arrows.size() == 28) {
             if (pageNum <= maxPage) {
                 pageNum++;
             } else {
@@ -188,5 +186,4 @@ public class TelBot extends TelegramLongPollingBot {
         System.out.println(max);
         return max;
     }
-
 }
