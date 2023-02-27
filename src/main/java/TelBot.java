@@ -9,6 +9,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class TelBot extends TelegramLongPollingBot {
 
@@ -123,12 +126,15 @@ public class TelBot extends TelegramLongPollingBot {
 
     public static void scrape(String url, String book) throws IOException {
 
-        int pageNum = 27;
+        int pageNum = 1;
+        int maxPage = largestPage(url);
 
         while (true) {
 
-            Document document = Jsoup.connect(url + pageNum + "?page=" + pageNum).userAgent("Chrome").get();
-            System.out.println(document);
+            String nUrl = url + pageNum + "?page=" + pageNum;
+            Map<String, String> cookies = Jsoup.connect(nUrl).execute().cookies();
+            Document document = Jsoup.connect(nUrl).userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36").cookies(cookies).get();
+            //System.out.println(document.body().html());
             Elements bookListing = document.getElementsByClass("AdItem_adHolder__NoNLJ");
 
             for (Element listing : bookListing) {
@@ -145,8 +151,9 @@ public class TelBot extends TelegramLongPollingBot {
                 }
             }
 
-            Elements arrows = document.getElementsByClass("Button_trailing__CU1T2");
-            if (arrows.size() == 2) {
+
+//            if (arrows.size() == 28) {
+            if (pageNum <= maxPage) {
                 pageNum++;
             } else {
                 //int bookCount = listStorage.bookListSize(); // PROVERAVAM KOLIKO IMA KNJIGA U LISTI
@@ -155,6 +162,31 @@ public class TelBot extends TelegramLongPollingBot {
 
             }
         }
+    }
+
+    public static int largestPage(String url) throws IOException{
+        listStorage.removeNumbList();
+        String nUrl = url + "1" + "?page=" + "1";
+        Map<String, String> cookies = Jsoup.connect(nUrl).execute().cookies();
+        Document document = Jsoup.connect(nUrl).userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36").cookies(cookies).get();
+        Elements arrows = document.getElementsByClass("Button_children__3mYJw");
+        for (Element listArrows : arrows) {
+            String text = listArrows.text();
+            String value = text.replaceAll("\\D+", "");
+            if (value.isEmpty()) {
+                continue;
+            } else {
+                int number = Integer.parseInt(value);
+                listStorage.addPageNumb(number);
+            }
+        }
+        int max = listStorage.getNumb(0);
+        for (int i = 1; i < listStorage.pageNumbSize(); i++) {
+            if (max < listStorage.getNumb(i))
+                max = listStorage.getNumb(i);
+        }
+        System.out.println(max);
+        return max;
     }
 
 }
