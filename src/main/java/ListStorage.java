@@ -20,7 +20,7 @@ public class ListStorage {
     }
 
     public void addBook(String book, String price, int page, String link) {
-        bookList.add("Knjiga --> " + book + " --> " + price + " --> str " + page + "\n" + "https://novi.kupujemprodajem.com/" + link);
+        bookList.add("Knjiga --> " + book + " --> " + price + " --> str " + page + "\n" + "https://novi.kupujemprodajem.com" + link);
     }
 
     public ArrayList<String> getBookList() {

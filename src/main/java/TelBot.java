@@ -16,6 +16,7 @@ import java.util.Map;
 public class TelBot extends TelegramLongPollingBot {
 
     private static ListStorage listStorage = new ListStorage();
+    private static String newUrl = "";
 
     @Override
     public String getBotUsername() {
@@ -41,7 +42,9 @@ public class TelBot extends TelegramLongPollingBot {
 
                 if (command.startsWith(Command.EPIC)) {
 
-                    listStorage.addUrl("https://novi.kupujemprodajem.com/knjige/epska-fantastika/grupa/8/1095/");
+                    //listStorage.addUrl("https://novi.kupujemprodajem.com/knjige/epska-fantastika/grupa/8/1095/");
+
+                    newUrl = "https://novi.kupujemprodajem.com/knjige/epska-fantastika/grupa/8/1095/";
 
                     sndMessage.setText("Tražim u Epskoj Fantastici...\n Unesi naziv knjige: ");
 
@@ -55,7 +58,9 @@ public class TelBot extends TelegramLongPollingBot {
 
                 } else if (command.startsWith(Command.SCIENCE)) {
 
-                    listStorage.addUrl("https://novi.kupujemprodajem.com/knjige/naucna-fantastika/grupa/8/355/");
+                    //listStorage.addUrl("https://novi.kupujemprodajem.com/knjige/naucna-fantastika/grupa/8/355/");
+
+                    newUrl = "https://novi.kupujemprodajem.com/knjige/naucna-fantastika/grupa/8/355/";
 
                     sndMessage.setText("Tražim u Naučnoj Fantastici...\n Unesi naziv knjige: ");
 
@@ -78,14 +83,16 @@ public class TelBot extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
 
-                String url = listStorage.getUrlList().get(0);
-                listStorage.removeUrl();
+                //String url = listStorage.getUrlList().get(0);
+                //listStorage.removeUrl();
+
 
                 try {
-                    scrape(url, command);
+                    scrape(newUrl, command);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
 
                 if (listStorage.bookListSize()==0) {
 
@@ -186,4 +193,7 @@ public class TelBot extends TelegramLongPollingBot {
         System.out.println(max);
         return max;
     }
+
+    //public static String requsedCommand()
+
 }
